@@ -23,20 +23,26 @@ router.post(
   checkAccountPayload,
   checkAccountNameUnique,
   (req, res, next) => {
-    Accounts.create(req.body).then((newAccount) => {
-      console.log(newAccount);
-    });
+    Accounts.create(req.body)
+      .then((id) => {
+        Accounts.getById(id).then((newAccount) => {
+          res.status(201).json(newAccount);
+        });
+      })
+      .catch(next);
   }
 );
 
-router.put("/:id", checkAccountId, (req, res, next) => {
-  // DO YOUR MAGIC
+router.put("/:id", checkAccountId, checkAccountNameUnique, (req, res, next) => {
+  Accounts.updateById(req.params.id, req.body).then((updatedAccount) => {
+    res.status(202).json(updatedAccount);
+  });
 });
 
 router.delete("/:id", checkAccountId, (req, res, next) => {
   Accounts.deleteById(req.params.id)
     .then((deletedAccount) => {
-      res.json(deletedAccount);
+      res.status(200).json(deletedAccount);
     })
     .catch(next);
 });

@@ -12,8 +12,10 @@ const create = (account) => {
   return db("accounts").insert(account);
 };
 
-const updateById = (id, account) => {
-  // DO YOUR MAGIC
+const updateById = async (id, account) => {
+  await db("accounts").where("id", id).update(account);
+  const updatedAccount = await getById(id);
+  return updatedAccount;
 };
 
 const deleteById = async (id) => {
