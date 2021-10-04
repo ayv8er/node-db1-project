@@ -9,15 +9,17 @@ const getById = (id) => {
 };
 
 const create = (account) => {
-  // DO YOUR MAGIC
+  return db("accounts").insert(account);
 };
 
 const updateById = (id, account) => {
   // DO YOUR MAGIC
 };
 
-const deleteById = (id) => {
-  // DO YOUR MAGIC
+const deleteById = async (id) => {
+  const accountToDelete = await getById(id);
+  await db("accounts").where("id", id).delete();
+  return accountToDelete;
 };
 
 module.exports = {
