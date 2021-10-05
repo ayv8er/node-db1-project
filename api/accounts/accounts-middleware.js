@@ -16,24 +16,23 @@ exports.checkAccountPayload = (req, res, next) => {
       message: "budget of account is too large or too small",
     });
   } else {
+    req.body.name = req.body.name.trim();
     next();
   }
 };
 
-exports.checkAccountNameUnique = (req, res, next) => {
-  const { name } = req.body;
-  Accounts.getAll().then((accounts) => {
-    let count = 1;
-    for (let i = 0; i < accounts.length; i++) {
-      if (name.trim() === accounts[i].name) {
-        next({ status: 400, message: "that name is taken" });
-      } else if (count === accounts.length) {
-        next();
-      } else {
-        count += 1;
-      }
+exports.checkAccountNameUnique = async (req, res, next) => {
+  try {
+    const existing = await Accounts.getByName(req.body.name);
+
+    if (existing) {
+      next({ status: 400, message: "that name is taken" });
+    } else {
+      next();
     }
-  });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.checkAccountId = (req, res, next) => {

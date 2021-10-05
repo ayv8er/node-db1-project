@@ -8,20 +8,22 @@ const getById = (id) => {
   return db("accounts").where("id", id).first();
 };
 
-const create = (account) => {
-  return db("accounts").insert(account);
+const create = async (account) => {
+  const [id] = await db("accounts").insert(account);
+  return getById(id);
 };
 
 const updateById = async (id, account) => {
   await db("accounts").where("id", id).update(account);
-  const updatedAccount = await getById(id);
-  return updatedAccount;
+  return getById(id);
 };
 
-const deleteById = async (id) => {
-  const accountToDelete = await getById(id);
-  await db("accounts").where("id", id).delete();
-  return accountToDelete;
+const deleteById = (id) => {
+  return db("accounts").where("id", id).del();
+};
+
+const getByName = (name) => {
+  return db("accounts").where("name", name.trim()).first();
 };
 
 module.exports = {
@@ -30,4 +32,5 @@ module.exports = {
   create,
   updateById,
   deleteById,
+  getByName,
 };
