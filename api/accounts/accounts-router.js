@@ -24,7 +24,8 @@ router.post(
   checkAccountNameUnique,
   async (req, res, next) => {
     try {
-      const newAccount = await Accounts.create(req.body);
+      const newId = await Accounts.create(req.body);
+      const newAccount = await Accounts.getById(newId);
       res.status(201).json(newAccount);
     } catch (err) {
       next(err);
@@ -40,7 +41,7 @@ router.put(
   (req, res, next) => {
     Accounts.updateById(req.params.id, req.body)
       .then((updatedAccount) => {
-        res.status(202).json(updatedAccount);
+        res.status(200).json(updatedAccount);
       })
       .catch(next);
   }
